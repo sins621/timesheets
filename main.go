@@ -1,70 +1,70 @@
 package main
 
-// func main() {
-// 	// Create a new MCP server
-// 	s := server.NewMCPServer(
-// 		"Calculator Demo",
-// 		"1.0.0",
-// 		server.WithToolCapabilities(false),
-// 		server.WithRecovery(),
-// 	)
+import (
+	"context"
+	"fmt"
+	"io"
+	"net/http"
 
-// 	// Add a calculator tool
-// 	calculatorTool := mcp.NewTool("calculate",
-// 		mcp.WithDescription("Perform basic arithmetic operations"),
-// 		mcp.WithString("operation",
-// 			mcp.Required(),
-// 			mcp.Description("The operation to perform (add, subtract, multiply, divide)"),
-// 			mcp.Enum("add", "subtract", "multiply", "divide"),
-// 		),
-// 		mcp.WithNumber("x",
-// 			mcp.Required(),
-// 			mcp.Description("First number"),
-// 		),
-// 		mcp.WithNumber("y",
-// 			mcp.Required(),
-// 			mcp.Description("Second number"),
-// 		),
-// 	)
+	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/mark3labs/mcp-go/server"
+)
 
-// 	// Add the calculator handler
-// 	s.AddTool(calculatorTool, func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-// 		// Using helper functions for type-safe argument access
-// 		op, err := request.RequireString("operation")
-// 		if err != nil {
-// 			return mcp.NewToolResultError(err.Error()), nil
-// 		}
+func main() {
+	mcpServer := server.NewMCPServer(
+		"HTTP Demo",
+		"1.0.0",
+		server.WithToolCapabilities(false),
+		server.WithRecovery(),
+	)
 
-// 		x, err := request.RequireFloat("x")
-// 		if err != nil {
-// 			return mcp.NewToolResultError(err.Error()), nil
-// 		}
+	httpTool := mcp.NewTool("http request",
+		mcp.WithDescription("Perform a basic http request"),
+		mcp.WithString("address",
+			mcp.Required(),
+			mcp.Description("The address to make the get request to"),
+		),
+	)
 
-// 		y, err := request.RequireFloat("y")
-// 		if err != nil {
-// 			return mcp.NewToolResultError(err.Error()), nil
-// 		}
+	mcpServer.AddTool(httpTool, httpToolHandler)
 
-// 		var result float64
-// 		switch op {
-// 		case "add":
-// 			result = x + y
-// 		case "subtract":
-// 			result = x - y
-// 		case "multiply":
-// 			result = x * y
-// 		case "divide":
-// 			if y == 0 {
-// 				return mcp.NewToolResultError("cannot divide by zero"), nil
-// 			}
-// 			result = x / y
-// 		}
+	if err := server.ServeStdio(mcpServer); err != nil {
+		fmt.Printf("Server error: %v\n", err)
+	}
+}
 
-// 		return mcp.NewToolResultText(fmt.Sprintf("%.2f", result)), nil
-// 	})
+func httpToolHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	url, err := request.RequireString("address")
 
-// 	// Start the server
-// 	if err := server.ServeStdio(s); err != nil {
-// 		fmt.Printf("Server error: %v\n", err)
-// 	}
-// }
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+
+	res, err := requestHandler(url)
+
+	if err != nil {
+		return mcp.NewToolResultError("Error making http request"), nil
+	}
+
+	return mcp.NewToolResultText(res), nil
+}
+
+func requestHandler(requestUrl string) (string, error) {
+	req, err := http.NewRequest(http.MethodGet, requestUrl, nil)
+	if err != nil {
+		return "could not make request", nil
+	}
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "error making http request", nil
+	}
+	defer res.Body.Close()
+
+	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Sprintf("could not read response body: %s\n", err), nil
+	}
+
+	return fmt.Sprintf("response body: %s\n", resBody), nil
+}
