@@ -6,9 +6,16 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		panic("No environment file")
+	}
+
 	const warpBaseUrl = "https://office.warpdevelopment.com"
 
 	type User struct {
