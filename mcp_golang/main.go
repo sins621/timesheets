@@ -124,3 +124,11 @@ func authHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToo
 
 	return mcp.NewToolResultText(fmt.Sprintf("The authorizatin token is: %s\n", responseData.Token)), nil
 }
+
+func createUser(db *gorm.DB, email string, token string) User {
+	newUser := User{Email: email, Token: token, InitializedAt: time.Now()}
+	if res := db.Create(&newUser); res.Error != nil {
+		panic(fmt.Sprintf("Error creating new user: %v\n", res.Error))
+	}
+	return newUser
+}
