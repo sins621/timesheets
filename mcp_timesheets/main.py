@@ -1,6 +1,7 @@
-def main():
-    print("Hello from mcp!")
+from fastmcp import FastMCP
 
+mcp = FastMCP("Timesheet MCP Server")
 
-if __name__ == "__main__":
-    main()
+@mcp.tool
+def greet(name: str) -> str:
+    return f"Hello, {name}!"
