@@ -1,44 +1,95 @@
 package main
 
 import (
-    "context"
-    "fmt"
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
 
-    "github.com/mark3labs/mcp-go/mcp"
-    "github.com/mark3labs/mcp-go/server"
+	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/mark3labs/mcp-go/server"
 )
 
+const BASE_URL = "https://office.warpdevelopment.com"
+
 func main() {
-    // Create a new MCP server
-    s := server.NewMCPServer(
-        "Demo 🚀",
-        "1.0.0",
-        server.WithToolCapabilities(false),
-    )
+	s := server.NewMCPServer(
+		"Demo 🚀",
+		"1.0.0",
+		server.WithToolCapabilities(false),
+	)
 
-    // Add tool
-    tool := mcp.NewTool("hello_world",
-        mcp.WithDescription("Say hello to someone"),
-        mcp.WithString("name",
-            mcp.Required(),
-            mcp.Description("Name of the person to greet"),
-        ),
-    )
+	authTool := mcp.NewTool("Get Timesheet Token",
+		mcp.WithDescription("Get the Token from Timesheets Endpoint Using Username and Password"),
+	)
 
-    // Add tool handler
-    s.AddTool(tool, helloHandler)
+	s.AddTool(authTool, authHandler)
 
-    // Start the stdio server
-    if err := server.ServeStdio(s); err != nil {
-        fmt.Printf("Server error: %v\n", err)
-    }
+	if err := server.ServeStdio(s); err != nil {
+		fmt.Printf("Server error: %v\n", err)
+	}
 }
 
-func helloHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-    name, err := request.RequireString("name")
-    if err != nil {
-        return mcp.NewToolResultError(err.Error()), nil
-    }
+func authHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	email, exists := os.LookupEnv("EMAIL")
+	if !exists {
+		return mcp.NewToolResultError("Email does not exist in environment."), nil
+	}
 
-    return mcp.NewToolResultText(fmt.Sprintf("Hello, %s!", name)), nil
+	password, exists := os.LookupEnv("PASSWORD")
+	if !exists {
+		return mcp.NewToolResultError("Password does not exist in environment"), nil
+	}
+
+	type RequestBody struct {
+		Email    string `json:"Email"`
+		Password string `json:"Password"`
+	}
+
+	type ResponseBody struct {
+		Token string `json:"token"`
+	}
+
+	requestData := RequestBody{
+		Email:    email,
+		Password: password,
+	}
+
+	jsonData, err := json.Marshal(requestData)
+
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Error marshaling JSON: %v\n", err)), nil
+	}
+
+	resp, err := http.Post(
+		BASE_URL+"/api/account/authorise",
+		"application/json",
+		bytes.NewBuffer(jsonData),
+	)
+
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Error making HTTP Request to %s: %v\n", BASE_URL, err)), nil
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return mcp.NewToolResultError(fmt.Sprintf("Request Failed with status: %d\n", resp.StatusCode)), nil
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Error reading response: %v\n", err)), nil
+	}
+
+	var responseData ResponseBody
+	err = json.Unmarshal(body, &responseData)
+
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Error parsing json response: %v\n", err)), nil
+	}
+
+	return mcp.NewToolResultText(fmt.Sprintf("The authorizatin token is: %s\n", responseData.Token)), nil
 }
