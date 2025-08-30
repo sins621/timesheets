@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/glebarez/sqlite"
@@ -25,14 +26,25 @@ type User struct {
 	InitializedAt time.Time `gorm:"not null"`
 }
 
-var db, err = gorm.Open(sqlite.Open("timesheets.db"), &gorm.Config{})
-
 func main() {
+	exePath, err := os.Executable()
 
-	db.AutoMigrate(&User{})
+	if err != nil {
+		panic(fmt.Sprintf("Failed to get executable path: %v\n", err))
+	}
+	exeDir := filepath.Dir(exePath)
+	dbPath := filepath.Join(exeDir, "timesheets.db")
+
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 
 	if err != nil {
 		panic("Database failed to initialize")
+	}
+
+	err = db.AutoMigrate(&User{})
+
+	if err != nil {
+		panic("Error running migration")
 	}
 
 	s := server.NewMCPServer(
