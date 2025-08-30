@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_KLiNLJEqFF
 createdAt: 2025-08-30T11:53:35.595090300
-updatedAt: 2025-08-30T11:59:13.726352600
+updatedAt: 2025-08-30T12:03:14.362698100
 workspaceId: wk_3f6Mw8pMLp
 folderId: null
 authentication: {}
@@ -21,6 +21,6 @@ headers:
   id: eh679EkCUn
 method: GET
 name: Entry
-sortPriority: -1756553582064.997
+sortPriority: 5000.0
 url: ${[ BASE_URL ]}/api/entry/
 urlParameters: []

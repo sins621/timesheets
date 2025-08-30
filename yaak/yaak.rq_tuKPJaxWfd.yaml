@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_tuKPJaxWfd
 createdAt: 2025-08-30T11:37:26.362518500
-updatedAt: 2025-08-30T11:59:19.796357500
+updatedAt: 2025-08-30T12:03:14.352708300
 workspaceId: wk_3f6Mw8pMLp
 folderId: null
 authentication: {}
@@ -21,6 +21,6 @@ headers:
   id: 0uAYbppjYD
 method: GET
 name: Clients
-sortPriority: -1756553582065.0
+sortPriority: 1000.0
 url: ${[ BASE_URL ]}/api/client
 urlParameters: []

@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_55aB5L6srB
 createdAt: 2025-08-30T11:50:55.178856300
-updatedAt: 2025-08-30T12:00:30.426722900
+updatedAt: 2025-08-30T12:03:14.355399900
 workspaceId: wk_3f6Mw8pMLp
 folderId: null
 authentication: {}
@@ -38,6 +38,6 @@ headers:
   id: 3hShY2decR
 method: POST
 name: Create
-sortPriority: -1756553582064.999
+sortPriority: 2000.0
 url: ${[ BASE_URL ]}/api/entry/create
 urlParameters: []

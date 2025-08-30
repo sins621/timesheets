@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_3YPMHCeRMx
 createdAt: 2025-08-30T11:52:52.379128400
-updatedAt: 2025-08-30T11:59:02.401295200
+updatedAt: 2025-08-30T12:03:14.360475400
 workspaceId: wk_3f6Mw8pMLp
 folderId: null
 authentication: {}
@@ -21,6 +21,6 @@ headers:
   id: Be5QEvgvd7
 method: GET
 name: Person
-sortPriority: -1756553582064.999
+sortPriority: 4000.0
 url: ${[ BASE_URL ]}/api/users/me
 urlParameters: []
