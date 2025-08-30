@@ -9,13 +9,18 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/glebarez/sqlite"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
+	"gorm.io/gorm"
 )
 
 const BASE_URL = "https://office.warpdevelopment.com"
 
+var db, err = gorm.Open(sqlite.Open("timesheets.db"), &gorm.Config{})
+
 func main() {
+
 	s := server.NewMCPServer(
 		"Demo 🚀",
 		"1.0.0",
