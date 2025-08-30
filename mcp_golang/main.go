@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/glebarez/sqlite"
 	"github.com/mark3labs/mcp-go/mcp"
@@ -17,9 +18,22 @@ import (
 
 const BASE_URL = "https://office.warpdevelopment.com"
 
+type User struct {
+	gorm.Model
+	Email         string `gorm:"uniqueIndex"`
+	Token         string
+	InitializedAt time.Time `gorm:"not null"`
+}
+
 var db, err = gorm.Open(sqlite.Open("timesheets.db"), &gorm.Config{})
 
 func main() {
+
+	db.AutoMigrate(&User{})
+
+	if err != nil {
+		panic("Database failed to initialize")
+	}
 
 	s := server.NewMCPServer(
 		"Demo 🚀",
