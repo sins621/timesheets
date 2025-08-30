@@ -1,9 +1,10 @@
 [project]
-name = "mcp"
+name = "mcp_timesheets"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "awslabs-mcp-lambda-handler>=0.1.8",
+    "fastmcp>=2.11.3",
 ]
