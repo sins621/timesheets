@@ -1,0 +1,27 @@
+type: http_request
+model: http_request
+id: rq_BvhFY9navQ
+createdAt: 2025-08-30T11:33:02.067470200
+updatedAt: 2025-08-30T12:00:22.827028600
+workspaceId: wk_3f6Mw8pMLp
+folderId: null
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "Email": "bradly@warpdevelopment.com",
+      "Password": "${[ PASSWORD ]}"
+    }
+bodyType: application/json
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: I6IpbqrU5Z
+method: POST
+name: Authorize
+sortPriority: -1756553582065.0
+url: ${[ BASE_URL ]}/api/account/authorise
+urlParameters: []

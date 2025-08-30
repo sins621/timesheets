@@ -1,0 +1,26 @@
+type: http_request
+model: http_request
+id: rq_tuKPJaxWfd
+createdAt: 2025-08-30T11:37:26.362518500
+updatedAt: 2025-08-30T11:59:19.796357500
+workspaceId: wk_3f6Mw8pMLp
+folderId: null
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers:
+- enabled: true
+  name: Authorization
+  value: ${[ TOKEN ]}
+  id: prkNJIeFfv
+- enabled: true
+  name: ''
+  value: ''
+  id: 0uAYbppjYD
+method: GET
+name: Clients
+sortPriority: -1756553582065.0
+url: ${[ BASE_URL ]}/api/client
+urlParameters: []

@@ -1,0 +1,26 @@
+type: http_request
+model: http_request
+id: rq_KLiNLJEqFF
+createdAt: 2025-08-30T11:53:35.595090300
+updatedAt: 2025-08-30T11:59:13.726352600
+workspaceId: wk_3f6Mw8pMLp
+folderId: null
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers:
+- enabled: true
+  name: Authorization
+  value: ${[ TOKEN ]}
+  id: prkNJIeFfv
+- enabled: true
+  name: ''
+  value: ''
+  id: eh679EkCUn
+method: GET
+name: Entry
+sortPriority: -1756553582064.997
+url: ${[ BASE_URL ]}/api/entry/
+urlParameters: []
