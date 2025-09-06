@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_owoEU42iY4
 createdAt: 2025-08-30T11:53:11.307496600
-updatedAt: 2025-08-30T12:03:14.357902400
+updatedAt: 2025-09-06T14:52:16.283957400
 workspaceId: wk_3f6Mw8pMLp
 folderId: null
 authentication: {}
@@ -18,9 +18,13 @@ headers:
 - enabled: true
   name: ''
   value: ''
-  id: vuHmAyaY8M
+  id: F3dAay3d3K
 method: GET
 name: Project
-sortPriority: 3000.0
+sortPriority: 2500.0
 url: ${[ BASE_URL ]}/api/Project/
-urlParameters: []
+urlParameters:
+- enabled: true
+  name: ''
+  value: ''
+  id: zJCsCMQnag
