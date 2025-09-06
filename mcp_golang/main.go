@@ -1,14 +1,16 @@
 package main
 
 import (
-	"context"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/glebarez/sqlite"
-	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"gorm.io/gorm"
 )
@@ -91,9 +93,11 @@ func main() {
 		panic("Error running migration")
 	}
 
-	// db := NewGormDatabase(gormDB)
+	db := NewGormDatabase(gormDB)
 
-	// handler := NewHandler(db)
+	handler := NewHandler(db)
+
+	handler.updateUserToken("", "")
 
 	s := server.NewMCPServer(
 		"Demo 🚀",
@@ -105,105 +109,75 @@ func main() {
 	// 	mcp.WithDescription("Get the Token from Timesheets Endpoint Using Username and Password"),
 	// )
 
-	// s.AddTool(authTool, handler.authHandler)
-
-	nameTool := mcp.NewTool("get_name",
-		mcp.WithDescription("Get the name to enter into the Greeting Tool"),
-	)
-
-	s.AddTool(nameTool, nameHandler)
-
-	greetingTool := mcp.NewTool("greet",
-		mcp.WithDescription("Greet today's name"),
-		mcp.WithString("name",
-			mcp.Required(),
-			mcp.Description("Name for today which can be gotten from get_name tool"),
-		),
-	)
-
-	s.AddTool(greetingTool, greetingHandler)
+	// s.AddTool(authTool, handler.updateUserToken)
 
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Printf("Server error: %v\n", err)
 	}
 }
 
-func nameHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	return mcp.NewToolResultText("John Doe"), nil
-}
+func (h *Handler) updateUserToken(email string, password string) (token string, err error) {
+	// email, exists := os.LookupEnv("EMAIL")
+	// if !exists {
+	// 	return mcp.NewToolResultError("Email does not exist in environment."), fmt.Errorf("email does not exist in environment")
+	// }
 
-func greetingHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	name, err := request.RequireString("name")
+	// password, exists := os.LookupEnv("PASSWORD")
+	// if !exists {
+	// 	return mcp.NewToolResultError("Password does not exist in environment"), fmt.Errorf("password does not exist in environment")
+	// }
 
-	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("You did not provide the name for this tool: %v\n", err)), err
+	type RequestBody struct {
+		Email    string `json:"Email"`
+		Password string `json:"Password"`
 	}
 
-	return mcp.NewToolResultText(fmt.Sprintf("Hello %s\n", name)), nil
+	type ResponseBody struct {
+		Token string `json:"token"`
+	}
+
+	requestData := RequestBody{
+		Email:    email,
+		Password: password,
+	}
+
+	jsonData, err := json.Marshal(requestData)
+
+	if err != nil {
+		return "", fmt.Errorf("error marshaling JSON: %v", err)
+	}
+
+	resp, err := http.Post(
+		BASE_URL+"/api/account/authorise",
+		"application/json",
+		bytes.NewBuffer(jsonData),
+	)
+
+	if err != nil {
+		return "", fmt.Errorf("error making HTTP request to %s: %v", BASE_URL, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("request failed with status: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("error reading response: %v", err)
+	}
+
+	var responseData ResponseBody
+	err = json.Unmarshal(body, &responseData)
+
+	if err != nil {
+		return "", fmt.Errorf("error parsing json response: %v", err)
+	}
+
+	err = h.db.UpdateUserToken(email, responseData.Token)
+	if err != nil {
+		return "", fmt.Errorf("error updating user token: %v", err)
+	}
+
+	return responseData.Token, nil
 }
-
-// func (h *Handler) authHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-// 	email, exists := os.LookupEnv("EMAIL")
-// 	if !exists {
-// 		return mcp.NewToolResultError("Email does not exist in environment."), fmt.Errorf("email does not exist in environment")
-// 	}
-
-// 	password, exists := os.LookupEnv("PASSWORD")
-// 	if !exists {
-// 		return mcp.NewToolResultError("Password does not exist in environment"), fmt.Errorf("password does not exist in environment")
-// 	}
-
-// 	type RequestBody struct {
-// 		Email    string `json:"Email"`
-// 		Password string `json:"Password"`
-// 	}
-
-// 	type ResponseBody struct {
-// 		Token string `json:"token"`
-// 	}
-
-// 	requestData := RequestBody{
-// 		Email:    email,
-// 		Password: password,
-// 	}
-
-// 	jsonData, err := json.Marshal(requestData)
-
-// 	if err != nil {
-// 		return mcp.NewToolResultError(fmt.Sprintf("Error marshaling JSON: %v\n", err)), err
-// 	}
-
-// 	resp, err := http.Post(
-// 		BASE_URL+"/api/account/authorise",
-// 		"application/json",
-// 		bytes.NewBuffer(jsonData),
-// 	)
-
-// 	if err != nil {
-// 		return mcp.NewToolResultError(fmt.Sprintf("Error making HTTP Request to %s: %v\n", BASE_URL, err)), err
-// 	}
-// 	defer resp.Body.Close()
-
-// 	if resp.StatusCode != http.StatusOK {
-// 		return mcp.NewToolResultError(fmt.Sprintf("Request Failed with status: %d\n", resp.StatusCode)), fmt.Errorf("request failed with status: %d", resp.StatusCode)
-// 	}
-
-// 	body, err := io.ReadAll(resp.Body)
-// 	if err != nil {
-// 		return mcp.NewToolResultError(fmt.Sprintf("Error reading response: %v\n", err)), err
-// 	}
-
-// 	var responseData ResponseBody
-// 	err = json.Unmarshal(body, &responseData)
-
-// 	if err != nil {
-// 		return mcp.NewToolResultError(fmt.Sprintf("Error parsing json response: %v\n", err)), err
-// 	}
-
-// 	err = h.db.UpdateUserToken(email, responseData.Token)
-// 	if err != nil {
-// 		return mcp.NewToolResultError(fmt.Sprintf("Error updating user token: %v\n", err)), err
-// 	}
-
-// 	return mcp.NewToolResultText(fmt.Sprintf("The authorizatin token is: %s\n", responseData.Token)), nil
-// }
