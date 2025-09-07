@@ -14,7 +14,7 @@ func main() {
 	gormDB := database.Init()
 	db := database.NewGormDatabase(gormDB)
 	tsr := request.NewTimeSheetRequest("https://office.warpdevelopment.com")
-	dataHandler := handlers.NewDataHandler(db, tsr)
+	dataHandler := handlers.NewServiceHandler(db, tsr)
 	toolHandler := handlers.NewToolHandler(dataHandler)
 
 	s := server.NewMCPServer(

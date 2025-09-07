@@ -1,9 +1,9 @@
 package handlers
 
 type ToolHandler struct {
-	sh *DataHandler
+	sh *ServiceHandler
 }
 
-func NewToolHandler(sh *DataHandler) *ToolHandler {
+func NewToolHandler(sh *ServiceHandler) *ToolHandler {
 	return &ToolHandler{sh: sh}
 }
