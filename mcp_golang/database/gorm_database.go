@@ -38,7 +38,7 @@ func (g *GormDatabase) UpdateUser(user *models.User) (*models.User, error) {
 	return user, err
 }
 
-func Init() *gorm.DB {
+func InitializeGormDB() *gorm.DB {
 	exePath, err := os.Executable()
 	if err != nil {
 		panic(fmt.Sprintf("Failed to get executable path: %v\n", err))

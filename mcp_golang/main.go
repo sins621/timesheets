@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	gormDB := database.Init()
+	gormDB := database.InitializeGormDB()
 	db := database.NewGormDatabase(gormDB)
 	tsr := request.NewTimeSheetRequest("https://office.warpdevelopment.com")
 	serviceHandler := handlers.NewServiceHandler(db, tsr)
