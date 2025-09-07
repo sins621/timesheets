@@ -40,7 +40,7 @@ func main() {
 		),
 		mcp.WithNumber("projectID",
 			mcp.Required(),
-			mcp.Description("The ID of the project the user is working on."),
+			mcp.Description("The ID of the project the user is working on. Can be retrieved from Project ID Tool"),
 		),
 		mcp.WithString("costCodeID",
 			mcp.Required(),
