@@ -11,8 +11,8 @@ import (
 type MockDatabase struct {
 }
 
-func (m *MockDatabase) CreateUser(*User) error {
-	return nil
+func (m *MockDatabase) CreateUser(user *User) (*User, error) {
+	return user, nil
 }
 
 func (m *MockDatabase) GetUserByEmail(email string) (*User, error) {
@@ -21,8 +21,8 @@ func (m *MockDatabase) GetUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (m *MockDatabase) UpdateUserToken(email, token string) error {
-	return nil
+func (m *MockDatabase) UpdateUserToken(email, token string) (string, error) {
+	return "", nil
 }
 
 func (m *MockDatabase) GetUserByID(id uint) (*User, error) {
