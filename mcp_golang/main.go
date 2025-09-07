@@ -18,8 +18,8 @@ func main() {
 	toolHandler := handlers.NewToolHandler(serviceHandler)
 
 	s := server.NewMCPServer(
-		"Demo 🚀",
-		"1.0.0",
+		"Timesheet MCP",
+		"0.0.1",
 		server.WithToolCapabilities(false),
 	)
 
