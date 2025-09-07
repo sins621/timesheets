@@ -28,7 +28,7 @@ type User struct {
 type Database interface {
 	CreateUser(user *User) (*User, error)
 	GetUserByEmail(email string) (*User, error)
-	UpdateUserToken(email, token string) (string, error)
+	UpdateUser(user *User) (*User, error)
 	GetUserByID(id uint) (*User, error)
 }
 
@@ -53,10 +53,10 @@ func (g *GormDatabase) GetUserByEmail(email string) (*User, error) {
 	return &user, err
 }
 
-func (g *GormDatabase) UpdateUserToken(email, token string) (string, error) {
-	err := g.db.Model(&User{}).Where("email = ?", email).Update("token", token).Error
+func (g *GormDatabase) UpdateUserToken(user *User, token string) (*User, error) {
+	err := g.db.Save(&user).Error
 
-	return token, err
+	return user, err
 }
 
 func (g *GormDatabase) GetUserByID(id uint) (*User, error) {
@@ -94,10 +94,6 @@ func main() {
 
 	db := NewGormDatabase(gormDB)
 
-	handler := NewHandler(db)
-
-	handler.updateUserToken("", "")
-
 	s := server.NewMCPServer(
 		"Demo 🚀",
 		"1.0.0",
@@ -115,16 +111,7 @@ func main() {
 	}
 }
 
-func (h *Handler) updateUserToken(email string, password string) (token string, err error) {
-	// email, exists := os.LookupEnv("EMAIL")
-	// if !exists {
-	// 	return mcp.NewToolResultError("Email does not exist in environment."), fmt.Errorf("email does not exist in environment")
-	// }
-
-	// password, exists := os.LookupEnv("PASSWORD")
-	// if !exists {
-	// 	return mcp.NewToolResultError("Password does not exist in environment"), fmt.Errorf("password does not exist in environment")
-	// }
+func getUserToken(email string, password string) (token string, err error) {
 
 	type RequestBody struct {
 		Email    string `json:"Email"`
@@ -173,10 +160,25 @@ func (h *Handler) updateUserToken(email string, password string) (token string, 
 		return "", fmt.Errorf("error parsing json response: %v", err)
 	}
 
-	token, err = h.db.UpdateUserToken(email, responseData.Token)
-	if err != nil {
-		return "", fmt.Errorf("error updating user token: %v", err)
-	}
-
-	return token, nil
+	return responseData.Token, nil
 }
+
+// email, exists := os.LookupEnv("EMAIL")
+// if !exists {
+// 	return mcp.NewToolResultError("Email does not exist in environment."), fmt.Errorf("email does not exist in environment")
+// }
+
+// password, exists := os.LookupEnv("PASSWORD")
+// if !exists {
+// 	return mcp.NewToolResultError("Password does not exist in environment"), fmt.Errorf("password does not exist in environment")
+// }
+
+// email, exists := os.LookupEnv("EMAIL")
+// if !exists {
+// 	return mcp.NewToolResultError("Email does not exist in environment."), fmt.Errorf("email does not exist in environment")
+// }
+
+// password, exists := os.LookupEnv("PASSWORD")
+// if !exists {
+// 	return mcp.NewToolResultError("Password does not exist in environment"), fmt.Errorf("password does not exist in environment")
+// }
