@@ -4,7 +4,6 @@ go 1.24.6
 
 require (
 	github.com/glebarez/sqlite v1.11.0
-	github.com/joho/godotenv v1.5.1
 	github.com/mark3labs/mcp-go v0.38.0
 	gorm.io/gorm v1.30.2
 )
