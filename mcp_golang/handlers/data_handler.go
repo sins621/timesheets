@@ -10,11 +10,3 @@ type DataHandler struct {
 func NewDataHandler(db interfaces.Database, r interfaces.Request) *DataHandler {
 	return &DataHandler{db: db, r: r}
 }
-
-type ToolHandler struct {
-	sh *DataHandler
-}
-
-func NewToolHandler(sh *DataHandler) *ToolHandler {
-	return &ToolHandler{sh: sh}
-}
