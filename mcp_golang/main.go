@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 
 	"ts_mcp/database"
@@ -22,6 +23,16 @@ func main() {
 		"0.0.1",
 		server.WithToolCapabilities(false),
 	)
+
+	tool := mcp.NewTool("test",
+		mcp.WithDescription("test"),
+		mcp.WithString("name",
+			mcp.Required(),
+			mcp.Description("test"),
+		),
+	)
+
+	s.AddTool(tool, toolHandler.LogWork)
 
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Printf("Server error: %v\n", err)
