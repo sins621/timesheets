@@ -1,14 +1,14 @@
 version: "1"
 root: .
 main_path: ""
-tmp_path: ./tmp
+tmp_path: ./bin
 build_name: mcp_golang
 build_args: ""
 run_args: ""
 build_log: mcp_golang-errors.log
 valid_ext: .go, .tpl, .tmpl, .html
 no_rebuild_ext: .tpl, .tmpl, .html
-ignore: assets, tmp/*
+ignore: assets, bin/*
 build_delay: "600"
 colors: true
 log_color_main: cyan
