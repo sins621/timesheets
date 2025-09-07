@@ -1,6 +1,6 @@
 package handlers
 
-import "main.go/interfaces"
+import "ts_mcp/interfaces"
 
 type DataHandler struct {
 	db interfaces.Database

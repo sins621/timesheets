@@ -5,9 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"ts_mcp/models"
+
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
-	"main.go/models"
 )
 
 type GormDatabase struct {

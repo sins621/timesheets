@@ -5,9 +5,9 @@ import (
 
 	"github.com/mark3labs/mcp-go/server"
 
-	"main.go/database"
-	"main.go/handlers"
-	"main.go/request"
+	"ts_mcp/database"
+	"ts_mcp/handlers"
+	"ts_mcp/request"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module main.go
+module ts_mcp
 
 go 1.24.6
 

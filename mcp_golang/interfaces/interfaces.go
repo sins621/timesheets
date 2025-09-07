@@ -1,6 +1,6 @@
 package interfaces
 
-import "main.go/models"
+import "ts_mcp/models"
 
 type Database interface {
 	CreateUser(user *models.User) (*models.User, error)
