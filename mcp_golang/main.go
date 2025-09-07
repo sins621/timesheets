@@ -26,9 +26,9 @@ type User struct {
 }
 
 type Database interface {
-	CreateUser(user *User) error
+	CreateUser(user *User) (*User, error)
 	GetUserByEmail(email string) (*User, error)
-	UpdateUserToken(email, token string) error
+	UpdateUserToken(email, token string) (string, error)
 	GetUserByID(id uint) (*User, error)
 }
 
@@ -40,31 +40,30 @@ func NewGormDatabase(db *gorm.DB) *GormDatabase {
 	return &GormDatabase{db: db}
 }
 
-func (g *GormDatabase) CreateUser(user *User) error {
-	return g.db.Create(user).Error
+func (g *GormDatabase) CreateUser(user *User) (*User, error) {
+	err := g.db.Create(user).Error
+
+	return user, err
 }
 
 func (g *GormDatabase) GetUserByEmail(email string) (*User, error) {
 	var user User
 	err := g.db.Where("email = ?", email).First(&user).Error
-	if err != nil {
-		return nil, err
-	}
 
-	return &user, nil
+	return &user, err
 }
 
-func (g *GormDatabase) UpdateUserToken(email, token string) error {
-	return g.db.Model(&User{}).Where("email = ?").Update("token", token).Error
+func (g *GormDatabase) UpdateUserToken(email, token string) (string, error) {
+	err := g.db.Model(&User{}).Where("email = ?", email).Update("token", token).Error
+
+	return token, err
 }
 
 func (g *GormDatabase) GetUserByID(id uint) (*User, error) {
 	var user User
 	err := g.db.First(&user, id).Error
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
+
+	return &user, err
 }
 
 type Handler struct {
@@ -174,10 +173,10 @@ func (h *Handler) updateUserToken(email string, password string) (token string, 
 		return "", fmt.Errorf("error parsing json response: %v", err)
 	}
 
-	err = h.db.UpdateUserToken(email, responseData.Token)
+	token, err = h.db.UpdateUserToken(email, responseData.Token)
 	if err != nil {
 		return "", fmt.Errorf("error updating user token: %v", err)
 	}
 
-	return responseData.Token, nil
+	return token, nil
 }
