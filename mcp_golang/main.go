@@ -29,7 +29,6 @@ type Database interface {
 	CreateUser(user *User) (*User, error)
 	GetUserByEmail(email string) (*User, error)
 	UpdateUser(user *User) (*User, error)
-	GetUserByID(id uint) (*User, error)
 }
 
 type GormDatabase struct {
@@ -53,25 +52,18 @@ func (g *GormDatabase) GetUserByEmail(email string) (*User, error) {
 	return &user, err
 }
 
-func (g *GormDatabase) UpdateUserToken(user *User, token string) (*User, error) {
+func (g *GormDatabase) UpdateUser(user *User, token string) (*User, error) {
 	err := g.db.Save(&user).Error
 
 	return user, err
 }
 
-func (g *GormDatabase) GetUserByID(id uint) (*User, error) {
-	var user User
-	err := g.db.First(&user, id).Error
-
-	return &user, err
-}
-
 type Handler struct {
-	db Database
+	user *User
 }
 
-func NewHandler(db Database) *Handler {
-	return &Handler{db: db}
+func NewHandler(user *User) *Handler {
+	return &Handler{user: user}
 }
 
 func main() {
