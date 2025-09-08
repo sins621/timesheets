@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"time"
+	"ts_mcp/constants"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -23,19 +24,19 @@ func (th *ToolHandler) LogWork(ctx context.Context, r mcp.CallToolRequest) (*mcp
 
 	t := time.Now()
 
-	date := r.GetString("date", t.Format("2006-01-02T15:04:05"))
+	date := r.GetString(constants.ParamDate, t.Format("2006-01-02T15:04:05"))
 
-	hours, err := r.RequireInt("hours")
+	hours, err := r.RequireInt(constants.ParamHours)
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
 	}
 
-	projectID, err := r.RequireString("projectID")
+	projectID, err := r.RequireString(constants.ParamProjectID)
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
 	}
 
-	costCodeID, err := r.RequireString("costCodeID")
+	costCodeID, err := r.RequireString(constants.ParamCostCodeID)
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
 	}

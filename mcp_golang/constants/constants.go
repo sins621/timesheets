@@ -47,3 +47,11 @@ var CostCodeIDs = []string{
 	"60. Support Management",
 	"61. Planning & Design",
 }
+
+const (
+    ParamDescription = "description"
+    ParamDate        = "date"
+    ParamHours       = "hours"
+    ParamProjectID   = "projectID"
+    ParamCostCodeID  = "costCodeID"
+)
