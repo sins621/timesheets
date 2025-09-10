@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
+
+	"ts_mcp/constants"
+	"ts_mcp/utils"
 )
 
 type TimeSheetRequest struct {
@@ -113,4 +117,58 @@ func (tsr *TimeSheetRequest) GetPersonID(token string) (id int, err error) {
 	}
 
 	return p.PersonID, nil
+}
+
+func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, taskID int, personID int, costCodeID int, overtime bool, time int, date time.Time, description string) (err error) {
+	type TimeSheetEntry struct {
+		TaskID       int    `json:"TaskId"`
+		PersonID     int    `json:"PersonId"`
+		CostCodeID   int    `json:"CostCodeId"`
+		DepartmentID int    `json:"DepartmentId"`
+		Overtime     int    `json:"Overtime"`
+		Time         int    `json:"Time"`
+		EntryDate    string `json:"EntryDate"`
+		Description  string `json:"Comments"`
+		WorklogID    int    `json:"WorklogId"`
+		Audited      int    `json:"Audited"`
+	}
+
+	body := TimeSheetEntry{
+		TaskID:       taskID,
+		PersonID:     personID,
+		CostCodeID:   costCodeID,
+		DepartmentID: 1,
+		Overtime:     utils.Bool2int(overtime),
+		Time:         time,
+		EntryDate:    date.Format(constants.TimeFormat),
+		Description:  description,
+		WorklogID:    0,
+		Audited:      0,
+	}
+
+	payloadBuf := new(bytes.Buffer)
+	json.NewEncoder(payloadBuf).Encode(body)
+
+	req, err := http.NewRequest("POST", tsr.BaseURL+"/api/entry/create", payloadBuf)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("error sending request: %v\n", err)
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("API returned non-OK status: %s", resp.Status)
+	}
+
+	return nil
 }
