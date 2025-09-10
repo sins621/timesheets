@@ -16,7 +16,7 @@ func NewTimeSheetRequest(BaseURL string) *TimeSheetRequest {
 	return &TimeSheetRequest{BaseURL: BaseURL}
 }
 
-func (tsr *TimeSheetRequest) RequestUserToken(email string, password string) (token string, err error) {
+func (tsr *TimeSheetRequest) GetUserToken(email string, password string) (token string, err error) {
 	type RequestBody struct {
 		Email    string `json:"Email"`
 		Password string `json:"Password"`
@@ -67,7 +67,7 @@ func (tsr *TimeSheetRequest) RequestUserToken(email string, password string) (to
 	return responseData.Token, nil
 }
 
-func (tsr *TimeSheetRequest) RequestPersonID(token string) (id int, err error) {
+func (tsr *TimeSheetRequest) GetPersonID(token string) (id int, err error) {
 	type Person struct {
 		PersonID          int    `json:"PersonId"`
 		FirstName         string `json:"FirstName"`

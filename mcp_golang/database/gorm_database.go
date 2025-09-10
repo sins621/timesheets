@@ -25,7 +25,7 @@ func (g *GormDatabase) CreateUser(user *models.User) (*models.User, error) {
 	return user, err
 }
 
-func (g *GormDatabase) GetUserByEmail(email string) (*models.User, error) {
+func (g *GormDatabase) SelectUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	err := g.db.Where("email = ?", email).First(&user).Error
 
