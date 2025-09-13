@@ -52,7 +52,7 @@ const (
 	ParamDescription = "description"
 	ParamDate        = "date"
 	ParamHours       = "hours"
-	ParamProjectID   = "projectID"
+	ParamTaskID      = "taskID"
 	ParamCostCodeID  = "costCodeID"
 )
 
