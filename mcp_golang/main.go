@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -12,12 +13,26 @@ import (
 	"ts_mcp/request"
 )
 
+
 func main() {
+	email, present := os.LookupEnv("EMAIL")
+	if !present {
+		panic("email not present in environment")
+	}
+
+	password, present := os.LookupEnv("PASSWORD")
+	if !present {
+		panic("password not present in environment")
+	}
+
 	gormDB := database.InitializeGormDB()
 	db := database.NewGormDatabase(gormDB)
 	tsr := request.NewTimeSheetRequest("https://office.warpdevelopment.com")
 	serviceHandler := handlers.NewServiceHandler(db, tsr)
-	toolHandler := handlers.NewToolHandler(serviceHandler)
+	toolHandler := handlers.NewToolHandler(serviceHandler, handlers.McpUser{
+		Email: email,
+		Password: password,
+	})
 
 	s := server.NewMCPServer(
 		"Timesheet MCP",
@@ -38,7 +53,7 @@ func main() {
 			mcp.Required(),
 			mcp.Description("Hours the user has worked on this entry"),
 		),
-		mcp.WithNumber(constants.ParamProjectID,
+		mcp.WithNumber(constants.ParamTaskID,
 			mcp.Required(),
 			mcp.Description("The ID of the project the user is working on. Can be retrieved from Project ID Tool"),
 		),
