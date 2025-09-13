@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"ts_mcp/constants"
 	"ts_mcp/utils"
+	"ts_mcp/models"
 )
 
 type TimeSheetRequest struct {
@@ -119,7 +119,7 @@ func (tsr *TimeSheetRequest) GetPersonID(token string) (id int, err error) {
 	return p.PersonID, nil
 }
 
-func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, taskID int, personID int, costCodeID int, overtime bool, time int, date time.Time, description string) (err error) {
+func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, personID int, workEntry models.WorkEntry) (err error) {
 	type TimeSheetEntry struct {
 		TaskID       int    `json:"TaskId"`
 		PersonID     int    `json:"PersonId"`
@@ -134,14 +134,15 @@ func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, taskID int, person
 	}
 
 	body := TimeSheetEntry{
-		TaskID:       taskID,
+		TaskID:       workEntry.TaskID,
 		PersonID:     personID,
-		CostCodeID:   costCodeID,
+		CostCodeID:   workEntry.CostCodeID,
 		DepartmentID: 1,
-		Overtime:     utils.Bool2int(overtime),
-		Time:         time,
-		EntryDate:    date.Format(constants.TimeFormat),
-		Description:  description,
+		// TODO: Make it possible to log overtime
+		Overtime:     utils.Bool2int(false),
+		Time:         workEntry.Hours,
+		EntryDate:    workEntry.Date.Format(constants.TimeFormat),
+		Description:  workEntry.Description,
 		WorklogID:    0,
 		Audited:      0,
 	}

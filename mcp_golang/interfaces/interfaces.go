@@ -1,7 +1,6 @@
 package interfaces
 
 import (
-	"time"
 	"ts_mcp/models"
 )
 
@@ -14,5 +13,5 @@ type Database interface {
 type Request interface {
 	GetUserToken(email string, password string) (token string, err error)
 	GetPersonID(token string) (id int, err error)
-	PostTimeSheetEntry(token string, taskID int, personID int, costCodeID int, overtime bool, time int, date time.Time, description string) (err error)
+	PostTimeSheetEntry(token string, personID int, workEntry models.WorkEntry) (err error)
 }
