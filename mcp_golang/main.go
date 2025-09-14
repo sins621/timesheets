@@ -36,7 +36,7 @@ func main() {
 	s := server.NewMCPServer(
 		"Timesheet MCP",
 		"0.0.1",
-		server.WithToolCapabilities(false),
+		server.WithToolCapabilities(true),
 	)
 
 	logTool := mcp.NewTool("Log work on timesheet.",
