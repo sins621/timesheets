@@ -13,7 +13,6 @@ import (
 	"ts_mcp/request"
 )
 
-
 func main() {
 	email, present := os.LookupEnv("EMAIL")
 	if !present {
@@ -30,7 +29,7 @@ func main() {
 	tsr := request.NewTimeSheetRequest("https://office.warpdevelopment.com")
 	serviceHandler := handlers.NewServiceHandler(db, tsr)
 	toolHandler := handlers.NewToolHandler(serviceHandler, handlers.McpUser{
-		Email: email,
+		Email:    email,
 		Password: password,
 	})
 
