@@ -27,7 +27,7 @@ func (g *GormDatabase) CreateUser(user *models.User) (*models.User, error) {
 
 func (g *GormDatabase) SelectUserByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := g.db.Where("email = ?", email).First(&user).Error
+	err := g.db.Where("email = ? AND deleted_at IS NULL", email).First(&user).Error
 
 	return &user, err
 }
