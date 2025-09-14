@@ -33,9 +33,9 @@ func (th *ToolHandler) LogWork(ctx context.Context, r mcp.CallToolRequest) (*mcp
 
 	t := time.Now()
 
-	stringDate := r.GetString(constants.ParamDate, t.Format("2006-01-02T15:04:05"))
+	stringDate := r.GetString(constants.ParamDate, t.Format(constants.TimeFormat))
 
-	date, err := time.Parse(stringDate, constants.TimeFormat)
+	date, err := time.Parse(constants.TimeFormat, stringDate)
 
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
