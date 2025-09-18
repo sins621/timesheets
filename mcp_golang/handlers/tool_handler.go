@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"context"
-	"time"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 
 	"ts_mcp/constants"
 	"ts_mcp/models"
+
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
@@ -78,3 +79,13 @@ func (th *ToolHandler) LogWork(ctx context.Context, r mcp.CallToolRequest) (*mcp
 
 	return mcp.NewToolResultText("Working"), nil
 }
+
+func (th *ToolHandler) GetCostCodeIDs(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+	    return []mcp.ResourceContents{
+	        mcp.TextResourceContents{
+	            URI:      "info://CostCodeIDs",
+	            MIMEType: "text/plain",
+	            Text:     strings.Join(constants.CostCodeIDs, "\n"),
+	        },
+	    }, nil
+	}

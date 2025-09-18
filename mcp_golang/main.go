@@ -64,6 +64,12 @@ func main() {
 	)
 
 	s.AddTool(logTool, toolHandler.LogWork)
+	s.AddResource(mcp.NewResource(
+	    "info://CostCodeIDs",
+	    "Cost Code IDs",
+	    mcp.WithResourceDescription("A list of Cost Code IDs and What They Represent"),
+	    mcp.WithMIMEType("text/plain"),
+	), toolHandler.GetCostCodeIDs)
 
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Printf("Server error: %v\n", err)
