@@ -10,6 +10,6 @@ type User struct {
 	gorm.Model
 	Email         string `gorm:"uniqueIndex"`
 	Token         string
-	PersonId      int
+	PersonID      int
 	InitializedAt time.Time `gorm:"not null"`
 }

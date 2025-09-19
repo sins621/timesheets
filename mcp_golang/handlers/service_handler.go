@@ -35,7 +35,7 @@ func (sh *ServiceHandler) logWorkService(email string, password string, workEntr
 		user, err = sh.db.CreateUser(&models.User{
 			Email:         email,
 			Token:         token,
-			PersonId:      personID,
+			PersonID:      personID,
 			InitializedAt: time.Now(),
 		})
 	} else if time.Since(user.InitializedAt) > time.Hour*24*7 {
@@ -48,6 +48,6 @@ func (sh *ServiceHandler) logWorkService(email string, password string, workEntr
 		user, err = sh.db.UpdateUser(user)
 	}
 
-	err = sh.r.PostTimeSheetEntry(user.Token, user.PersonId, workEntry)
+	err = sh.r.PostTimeSheetEntry(user.Token, user.PersonID, workEntry)
 	return err
 }
