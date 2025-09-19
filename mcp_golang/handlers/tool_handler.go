@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"ts_mcp/constants"
-	"ts_mcp/models"
+	"ts_mcp/types"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -63,12 +63,12 @@ func (th *ToolHandler) LogWork(ctx context.Context, r mcp.CallToolRequest) (*mcp
 		return mcp.NewToolResultError(err.Error()), nil
 	}
 
-	workEntry := models.WorkEntry{
+	workEntry := types.WorkEntry{
 		Description: description,
-		Date: date,
-		Hours: hours,
-		TaskID: taskId,
-		CostCodeID: costCodeID,
+		Date:        date,
+		Hours:       hours,
+		TaskID:      taskID,
+		CostCodeID:  costCodeID,
 	}
 
 	err = th.sh.logWorkService(th.user.Email, th.user.Password, workEntry)

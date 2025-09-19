@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"ts_mcp/models"
+	"ts_mcp/types"
 )
 
 type Database interface {
@@ -13,5 +14,5 @@ type Database interface {
 type Request interface {
 	GetUserToken(email string, password string) (token string, err error)
 	GetPersonID(token string) (id int, err error)
-	PostTimeSheetEntry(token string, personID int, workEntry models.WorkEntry) (err error)
+	PostTimeSheetEntry(token string, personID int, workEntry types.WorkEntry) (err error)
 }

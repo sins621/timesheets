@@ -119,7 +119,9 @@ func (tsr *TimeSheetRequest) GetPersonID(token string) (id int, err error) {
 	return p.PersonID, nil
 }
 
-func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, personID int, workEntry models.WorkEntry) (err error) {
+func (tsr *TimeSheetRequest) GetProjects(token string) {}
+
+func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, personID int, workEntry types.WorkEntry) (err error) {
 	type TimeSheetEntry struct {
 		TaskID       int    `json:"TaskId"`
 		PersonID     int    `json:"PersonId"`

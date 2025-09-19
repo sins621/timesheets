@@ -6,6 +6,7 @@ import (
 
 	"ts_mcp/interfaces"
 	"ts_mcp/models"
+	"ts_mcp/types"
 )
 
 type ServiceHandler struct {
@@ -17,7 +18,7 @@ func NewServiceHandler(db interfaces.Database, r interfaces.Request) *ServiceHan
 	return &ServiceHandler{db: db, r: r}
 }
 
-func (sh *ServiceHandler) logWorkService(email string, password string, workEntry models.WorkEntry) (err error) {
+func (sh *ServiceHandler) logWorkService(email string, password string, workEntry types.WorkEntry) (err error) {
 	user, err := sh.db.SelectUserByEmail(email)
 
 	if err != nil {
