@@ -142,12 +142,12 @@ func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, personID int, work
 		CostCodeID:   workEntry.CostCodeID,
 		DepartmentID: 1,
 		// TODO: Make it possible to log overtime
-		Overtime:     utils.Bool2int(false),
-		Time:         workEntry.Hours,
-		EntryDate:    workEntry.Date.Format(constants.TimeFormat),
-		Description:  workEntry.Description,
-		WorklogID:    0,
-		Audited:      0,
+		Overtime:    utils.Bool2int(false),
+		Time:        workEntry.Hours,
+		EntryDate:   workEntry.Date.Format(constants.TimeFormat),
+		Description: workEntry.Description,
+		WorklogID:   0,
+		Audited:     0,
 	}
 
 	payloadBuf := new(bytes.Buffer)

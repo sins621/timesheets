@@ -13,12 +13,12 @@ import (
 )
 
 type McpUser struct {
-	Email string
+	Email    string
 	Password string
 }
 
 type ToolHandler struct {
-	sh *ServiceHandler
+	sh   *ServiceHandler
 	user McpUser
 }
 
@@ -47,7 +47,7 @@ func (th *ToolHandler) LogWork(ctx context.Context, r mcp.CallToolRequest) (*mcp
 		return mcp.NewToolResultError(err.Error()), nil
 	}
 
-	taskId, err := r.RequireInt(constants.ParamTaskID)
+	taskID, err := r.RequireInt(constants.ParamTaskID)
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
 	}
@@ -80,12 +80,6 @@ func (th *ToolHandler) LogWork(ctx context.Context, r mcp.CallToolRequest) (*mcp
 	return mcp.NewToolResultText("Working"), nil
 }
 
-func (th *ToolHandler) GetCostCodeIDs(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
-	    return []mcp.ResourceContents{
-	        mcp.TextResourceContents{
-	            URI:      "info://CostCodeIDs",
-	            MIMEType: "text/plain",
-	            Text:     strings.Join(constants.CostCodeIDs, "\n"),
-	        },
-	    }, nil
-	}
+func (th *ToolHandler) GetCostCodeIDs(ctx context.Context, r mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return mcp.NewToolResultText(strings.Join(constants.CostCodeIDs, "\n")), nil
+}
