@@ -58,18 +58,16 @@ func main() {
 		),
 		mcp.WithString(constants.ParamCostCodeID,
 			mcp.Required(),
-			mcp.Description("The relevant Cost Code ID of the work done."),
+			mcp.Description("The relevant Cost Code ID of the work done. Call the Get Cost Code IDs and related descriptions tool for this information and try to gather which codes to use from the context of the conversation. Only ask the user to provide cost code IDs explicitly if confidence is low on assumptions."),
 			mcp.WithStringEnumItems(constants.CostCodeIDs),
 		),
 	)
 
+	costCodeTool := mcp.NewTool("Get Cost Code IDs and related descriptions",
+		mcp.WithDescription("Allows to look up Cost Code IDs along with descriptions of them."))
+
 	s.AddTool(logTool, toolHandler.LogWork)
-	s.AddResource(mcp.NewResource(
-	    "info://CostCodeIDs",
-	    "Cost Code IDs",
-	    mcp.WithResourceDescription("A list of Cost Code IDs and What They Represent"),
-	    mcp.WithMIMEType("text/plain"),
-	), toolHandler.GetCostCodeIDs)
+	s.AddTool(costCodeTool, toolHandler.GetCostCodeIDs)
 
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Printf("Server error: %v\n", err)
