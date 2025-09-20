@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -90,5 +91,5 @@ func (th *ToolHandler) GetProjects(ctx context.Context, r mcp.CallToolRequest) (
 		return mcp.NewToolResultError(err.Error()), nil
 	}
 
-	return mcp.NewToolResultStructured(projects, ""), nil
+	return mcp.NewToolResultStructured(projects, fmt.Sprintf("%#v", projects)), nil
 }

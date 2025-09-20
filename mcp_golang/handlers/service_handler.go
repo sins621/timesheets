@@ -52,18 +52,18 @@ func (sh *ServiceHandler) logWorkService(email string, password string, workEntr
 	return err
 }
 
-func (sh *ServiceHandler) GetProjects(email string, password string) (projects []types.Project, err error) {
+func (sh *ServiceHandler) GetProjects(email string, password string) (projects types.Projects, err error) {
 	user, err := sh.db.SelectUserByEmail(email)
 
 	if err != nil {
 		token, err := sh.r.GetUserToken(email, password)
 		if err != nil {
-			return nil, fmt.Errorf("error getting user token for email: %s\n, err: %v\n", email, err)
+			return types.Projects{}, fmt.Errorf("error getting user token for email: %s\n, err: %v\n", email, err)
 		}
 
 		personID, err := sh.r.GetPersonID(token)
 		if err != nil {
-			return nil, fmt.Errorf("error getting user person id for email: %s\n, err: %v\n", email, err)
+			return types.Projects{}, fmt.Errorf("error getting user person id for email: %s\n, err: %v\n", email, err)
 		}
 
 		user, err = sh.db.CreateUser(&models.User{
@@ -75,7 +75,7 @@ func (sh *ServiceHandler) GetProjects(email string, password string) (projects [
 	} else if time.Since(user.InitializedAt) > time.Hour*24*7 {
 		token, err := sh.r.GetUserToken(email, password)
 		if err != nil {
-			return nil, fmt.Errorf("error getting user token for email: %s\n, err: %v\n", email, err)
+			return types.Projects{}, fmt.Errorf("error getting user token for email: %s\n, err: %v\n", email, err)
 		}
 
 		user.Token = token
