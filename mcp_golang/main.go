@@ -54,11 +54,11 @@ func main() {
 		),
 		mcp.WithNumber(constants.ParamTaskID,
 			mcp.Required(),
-			mcp.Description("The ID of the task the user is working on. Use the get_projects_tool to get all of the available projects on the platform which include the client and classification for work done as 'Name'. Try to gather which task ID is appropriate from the context of the conversation. Only ask the user to provide the task IDs explicitly if confidence is low on assumptions but you MUST include a list of options for them to choose from."),
+			mcp.Description("The ID of the task the user is working on. Use the get_projects_tool to get all of the available projects on the platform which include the client and classification for work done as 'Name'. Try to gather which task ID is appropriate from the context of the conversation or check git history if no context is given. Only ask the user to provide the task IDs explicitly if confidence is low on assumptions but you MUST include a list of options for them to choose from."),
 		),
 		mcp.WithString(constants.ParamCostCodeID,
 			mcp.Required(),
-			mcp.Description("The relevant Cost Code ID of the work done. Call the get_cost_code_tool for this information and try to gather which codes to use from the context of the conversation. Only ask the user to provide cost code IDs explicitly if confidence is low on assumptions but you MUST include a list of options for them to choose from."),
+			mcp.Description("The relevant Cost Code ID of the work done. Call the get_cost_code_tool for this information and try to gather which codes to use from the context of the conversation or check git history if no context is given. Only ask the user to provide cost code IDs explicitly if confidence is low on assumptions but you MUST include a list of options for them to choose from."),
 			mcp.WithStringEnumItems(constants.CostCodeIDs),
 		),
 	)
