@@ -2,7 +2,7 @@ package types
 
 import "time"
 
-type GetProjectResponse struct {
+type Project struct {
 	TaskID    int       `json:"TaskId"`
 	Name      string    `json:"Name"`
 	IsActive  bool      `json:"IsActive"`
