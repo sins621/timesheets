@@ -39,7 +39,7 @@ func main() {
 		server.WithToolCapabilities(true),
 	)
 
-	logTool := mcp.NewTool("Log work on timesheet.",
+	logTool := mcp.NewTool("log_tool",
 		mcp.WithDescription("Allows for logging work done on timesheets."),
 		mcp.WithString(constants.ParamDescription,
 			mcp.Required(),
@@ -63,7 +63,7 @@ func main() {
 		),
 	)
 
-	costCodeTool := mcp.NewTool("Get Cost Code IDs and related descriptions",
+	costCodeTool := mcp.NewTool("get_cost_code_tool",
 		mcp.WithDescription("Allows to look up Cost Code IDs along with descriptions of them."))
 
 	s.AddTool(logTool, toolHandler.LogWork)
