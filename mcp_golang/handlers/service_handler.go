@@ -51,3 +51,36 @@ func (sh *ServiceHandler) logWorkService(email string, password string, workEntr
 	err = sh.r.PostTimeSheetEntry(user.Token, user.PersonID, workEntry)
 	return err
 }
+
+func (sh *ServiceHandler) GetProjects(email string, password string) (projects []types.Project, err error) {
+	user, err := sh.db.SelectUserByEmail(email)
+
+	if err != nil {
+		token, err := sh.r.GetUserToken(email, password)
+		if err != nil {
+			return nil, fmt.Errorf("error getting user token for email: %s\n, err: %v\n", email, err)
+		}
+
+		personID, err := sh.r.GetPersonID(token)
+		if err != nil {
+			return nil, fmt.Errorf("error getting user person id for email: %s\n, err: %v\n", email, err)
+		}
+
+		user, err = sh.db.CreateUser(&models.User{
+			Email:         email,
+			Token:         token,
+			PersonID:      personID,
+			InitializedAt: time.Now(),
+		})
+	} else if time.Since(user.InitializedAt) > time.Hour*24*7 {
+		token, err := sh.r.GetUserToken(email, password)
+		if err != nil {
+			return nil, fmt.Errorf("error getting user token for email: %s\n, err: %v\n", email, err)
+		}
+
+		user.Token = token
+		user, err = sh.db.UpdateUser(user)
+	}
+
+	return sh.r.GetProjects(user.Token)
+}

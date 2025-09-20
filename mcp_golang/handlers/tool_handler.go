@@ -83,3 +83,12 @@ func (th *ToolHandler) LogWork(ctx context.Context, r mcp.CallToolRequest) (*mcp
 func (th *ToolHandler) GetCostCodeIDs(ctx context.Context, r mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	return mcp.NewToolResultText(strings.Join(constants.CostCodeIDs, "\n")), nil
 }
+
+func (th *ToolHandler) GetProjects(ctx context.Context, r mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	projects, err := th.sh.GetProjects(th.user.Email, th.user.Password)
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+
+	return mcp.NewToolResultStructured(projects, ""), nil
+}

@@ -119,7 +119,40 @@ func (tsr *TimeSheetRequest) GetPersonID(token string) (id int, err error) {
 	return p.PersonID, nil
 }
 
-func (tsr *TimeSheetRequest) GetProjects(token string) {}
+func (tsr *TimeSheetRequest) GetProjects(token string) (projects []types.Project, err error) {
+	req, err := http.NewRequest("GET", tsr.BaseURL+"/api/Project/", nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v\n", err)
+	}
+
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sendign request: %v\n", err)
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API returned non-OK status: %s\n", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %v", err)
+	}
+
+	var r []types.Project
+	err = json.Unmarshal(body, &r)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshalling JSON: %v", err)
+	}
+
+	return r, nil
+}
 
 func (tsr *TimeSheetRequest) PostTimeSheetEntry(token string, personID int, workEntry types.WorkEntry) (err error) {
 	type TimeSheetEntry struct {

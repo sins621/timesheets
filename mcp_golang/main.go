@@ -54,11 +54,11 @@ func main() {
 		),
 		mcp.WithNumber(constants.ParamTaskID,
 			mcp.Required(),
-			mcp.Description("The ID of the project the user is working on. Can be retrieved from Project ID Tool"),
+			mcp.Description("The ID of the task the user is working on. Use the get_projects_tool to get all of the available projects on the platform which include the client and classification for work done as 'Name'. Try to gather which task ID is appropriate from the context of the conversation. Only ask the user to provide the task IDs explicitly if confidence is low on assumptions but you MUST include a list of options for them to choose from."),
 		),
 		mcp.WithString(constants.ParamCostCodeID,
 			mcp.Required(),
-			mcp.Description("The relevant Cost Code ID of the work done. Call the Get Cost Code IDs and related descriptions tool for this information and try to gather which codes to use from the context of the conversation. Only ask the user to provide cost code IDs explicitly if confidence is low on assumptions."),
+			mcp.Description("The relevant Cost Code ID of the work done. Call the get_cost_code_tool for this information and try to gather which codes to use from the context of the conversation. Only ask the user to provide cost code IDs explicitly if confidence is low on assumptions but you MUST include a list of options for them to choose from."),
 			mcp.WithStringEnumItems(constants.CostCodeIDs),
 		),
 	)
@@ -66,8 +66,12 @@ func main() {
 	costCodeTool := mcp.NewTool("get_cost_code_tool",
 		mcp.WithDescription("Allows to look up Cost Code IDs along with descriptions of them."))
 
+	projectTool := mcp.NewTool("get_projects_tool",
+		mcp.WithDescription("Allows to look up all Projects available on the platform and their associated clients."))
+
 	s.AddTool(logTool, toolHandler.LogWork)
 	s.AddTool(costCodeTool, toolHandler.GetCostCodeIDs)
+	s.AddTool(projectTool, toolHandler.GetProjects)
 
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Printf("Server error: %v\n", err)
