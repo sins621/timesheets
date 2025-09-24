@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Hotreload Executuble",
+      "problemMatcher": [],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/mcp_golang"
+      },
+      "command": "fresh",
+      "icon": {
+        "color": "terminal.ansiYellow",
+        "id": "clock"
+      }
+    }
+  ]
+}
